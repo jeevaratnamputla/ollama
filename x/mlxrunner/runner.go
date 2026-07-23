@@ -168,7 +168,7 @@ func loadTensorsFromManifest(root *model.Root) (map[string]*mlx.Array, error) {
 	return allTensors, nil
 }
 
-func (r *Runner) Run(host, port string, mux http.Handler) error {
+func (r *Runner) Run(host, port, certFile, keyFile string, mux http.Handler) error {
 	g, ctx := errgroup.WithContext(context.Background())
 
 	g.Go(func() error {
@@ -199,8 +199,8 @@ func (r *Runner) Run(host, port string, mux http.Handler) error {
 	})
 
 	g.Go(func() error {
-		slog.Info("Starting HTTP server", "host", host, "port", port)
-		return http.ListenAndServe(net.JoinHostPort(host, port), mux)
+		slog.Info("Starting HTTPS server", "host", host, "port", port)
+		return http.ListenAndServeTLS(net.JoinHostPort(host, port), certFile, keyFile, mux)
 	})
 
 	return g.Wait()
