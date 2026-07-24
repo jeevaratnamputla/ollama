@@ -147,7 +147,7 @@ func (p *deepseek2Model) Tensors(s []Tensor) (out []*ggml.Tensor) {
 			return false
 		}
 
-		blkNum, err := strconv.Atoi(matches[1])
+		blkNum, err := strconv.ParseUint(matches[1], 10, 32)
 		if err != nil {
 			return false
 		}
