@@ -11,7 +11,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"text/template"
+	"html/template"
 	"text/template/parse"
 	"time"
 
