@@ -1036,7 +1036,7 @@ func (opts *Options) FromMap(m map[string]any) error {
 			continue
 		}
 
-		field := valueOpts.Field(opt.Index[0])
+		field := valueOpts.FieldByIndex(opt.Index)
 		if field.IsValid() && field.CanSet() {
 			if val == nil {
 				continue
@@ -1319,7 +1319,7 @@ func FormatParams(params map[string][]string) (map[string]any, error) {
 		if opt, ok := jsonOpts[key]; !ok {
 			return nil, fmt.Errorf("unknown parameter '%s'", key)
 		} else {
-			field := valueOpts.Field(opt.Index[0])
+			field := valueOpts.FieldByIndex(opt.Index)
 			if field.IsValid() && field.CanSet() {
 				switch field.Kind() {
 				case reflect.Float32:
