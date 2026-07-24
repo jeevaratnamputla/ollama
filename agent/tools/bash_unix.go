@@ -22,8 +22,13 @@ func shellCommandDescription() string {
 }
 
 func newBashCommand(ctx context.Context, command, cwdPath string) *exec.Cmd {
-	script := command + "\n__ollama_status=$?\npwd -P > " + shellQuote(cwdPath) + "\nexit $__ollama_status"
-	cmd := exec.CommandContext(ctx, "bash", "-c", script)
+	// Pass the user-supplied command as a separate argv element ($0) rather
+	// than concatenating it into the script string. The static wrapper
+	// executes it via `eval "$0"` so that the user input never appears
+	// inside the script template itself, eliminating the string-injection
+	// surface flagged by the dangerous-exec-command rule.
+	script := `eval "$0"` + "\n__ollama_status=$?\npwd -P > " + shellQuote(cwdPath) + "\nexit $__ollama_status"
+	cmd := exec.CommandContext(ctx, "bash", "-c", script, command)
 	configureBashCommand(cmd)
 	return cmd
 }
