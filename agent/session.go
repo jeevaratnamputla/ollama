@@ -731,7 +731,7 @@ func (s *Session) maybeCompact(ctx context.Context, runID string, opts RunOption
 	}
 	result, err := s.Compactor.MaybeCompact(ctx, req)
 	if err != nil {
-		if result.Due && !skipNotified {
+		if result != nil && result.Due && !skipNotified {
 			if trigger == "" {
 				trigger = CompactionTriggerError
 			}
