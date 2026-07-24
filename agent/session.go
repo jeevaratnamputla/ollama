@@ -770,7 +770,7 @@ func (s *Session) compactForToolOutputOverflow(ctx context.Context, runID string
 
 	result, err := s.Compactor.MaybeCompact(ctx, req)
 	if err != nil {
-		if result.Due && !skipNotified {
+		if result != nil && result.Due && !skipNotified {
 			s.emitCompactionSkipped(runID, opts, CompactionTriggerToolOutput, result.Reason)
 			skipNotified = true
 		}
