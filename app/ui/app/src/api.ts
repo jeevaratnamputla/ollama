@@ -189,7 +189,7 @@ export async function getModelCapabilities(
     });
   } catch (error) {
     // Model might not be downloaded yet, return empty capabilities
-    console.error(`Failed to get capabilities for ${modelName}:`, error);
+    console.error("Failed to get capabilities for %s:", modelName, error);
     return new ModelCapabilitiesResponse({ capabilities: [] });
   }
 }
