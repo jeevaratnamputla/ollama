@@ -161,11 +161,10 @@ func (s *Server) ollamaProxy() http.Handler {
 
 				newProxy := httputil.NewSingleHostReverseProxy(target)
 
-				originalDirector := newProxy.Director
-				newProxy.Director = func(req *http.Request) {
-					originalDirector(req)
-					req.Host = target.Host
-					s.log().Debug("proxying request", "method", req.Method, "path", req.URL.Path, "target", target.Host)
+				newProxy.Rewrite = func(req *httputil.ProxyRequest) {
+					req.SetURL(target)
+					req.Out.Host = target.Host
+					s.log().Debug("proxying request", "method", req.Out.Method, "path", req.Out.URL.Path, "target", target.Host)
 				}
 
 				newProxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {

@@ -61,7 +61,10 @@ func (db *database) init() error {
 		return fmt.Errorf("enable foreign keys: %w", err)
 	}
 
-	schema := fmt.Sprintf(`
+	// NOTE: The schema_version default value (16) must match currentSchemaVersion.
+	// It is inlined as a literal here to avoid string-formatted SQL queries.
+	// Update this literal whenever currentSchemaVersion is incremented.
+	schema := `
 	CREATE TABLE IF NOT EXISTS settings (
 		id INTEGER PRIMARY KEY CHECK (id = 1),
 		device_id TEXT NOT NULL DEFAULT '',
@@ -88,7 +91,7 @@ func (db *database) init() error {
 		cloud_setting_migrated BOOLEAN NOT NULL DEFAULT 0,
 		remote TEXT NOT NULL DEFAULT '', -- deprecated
 		auto_update_enabled BOOLEAN NOT NULL DEFAULT 1,
-		schema_version INTEGER NOT NULL DEFAULT %d
+		schema_version INTEGER NOT NULL DEFAULT 16
 	);
 
 	-- Insert default settings row if it doesn't exist
@@ -149,7 +152,7 @@ func (db *database) init() error {
 		plan TEXT NOT NULL DEFAULT '',
 		cached_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
-	`, currentSchemaVersion)
+	`
 
 	_, err := db.conn.Exec(schema)
 	if err != nil {

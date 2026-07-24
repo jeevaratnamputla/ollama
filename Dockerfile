@@ -315,5 +315,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV OLLAMA_HOST=0.0.0.0:11434
 EXPOSE 11434
+RUN groupadd -r ollama && useradd -r -g ollama -s /sbin/nologin ollama
+USER ollama
 ENTRYPOINT ["/bin/ollama"]
 CMD ["serve"]

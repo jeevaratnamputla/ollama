@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io"
 	"log/slog"
 	"net/http"
@@ -933,7 +934,9 @@ func writeSSE(w http.ResponseWriter, eventType string, data any) error {
 	if err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintf(w, "event: %s\ndata: %s\n\n", eventType, d); err != nil {
+	safeEvent := template.HTMLEscapeString(eventType)
+	safeData := template.HTMLEscapeString(string(d))
+	if _, err := io.WriteString(w, "event: "+safeEvent+"\ndata: "+safeData+"\n\n"); err != nil {
 		return err
 	}
 	if f, ok := w.(http.Flusher); ok {
