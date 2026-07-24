@@ -469,6 +469,14 @@ func copyProxyResponseBody(dst http.ResponseWriter, src io.Reader) error {
 	flusher, canFlush := dst.(http.Flusher)
 	buf := make([]byte, 32*1024)
 
+	// Ensure a safe Content-Type is always set before writing the body so that
+	// browsers never sniff or render the proxied bytes as HTML, which would
+	// enable XSS. copyProxyResponseHeaders should have already propagated the
+	// upstream Content-Type; this is a defence-in-depth fallback.
+	if dst.Header().Get("Content-Type") == "" {
+		dst.Header().Set("Content-Type", "application/octet-stream")
+	}
+
 	for {
 		n, err := src.Read(buf)
 		if n > 0 {
