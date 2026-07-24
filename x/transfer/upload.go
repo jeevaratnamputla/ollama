@@ -412,7 +412,7 @@ func (u *uploader) initUpload(ctx context.Context, blob Blob) (uploadEndpoint, e
 func (u *uploader) putDirect(ctx context.Context, ep uploadEndpoint, f *os.File, blob Blob) (int64, error) {
 	pr, err := u.streamPutBody(ctx, ep, f, blob)
 	if err != nil {
-		return pr.bytes(), err
+		return 0, err
 	}
 	// Body slot is released; commit is bookkeeping (no body) and shouldn't
 	// hold the cap from other body uploads.
