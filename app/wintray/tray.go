@@ -3,7 +3,7 @@
 package wintray
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"log/slog"
@@ -432,7 +432,7 @@ func (t *winTray) getVisibleItemIndex(parent, val uint32) int {
 }
 
 func iconBytesToFilePath(iconBytes []byte) (string, error) {
-	bh := md5.Sum(iconBytes)
+	bh := sha256.Sum256(iconBytes)
 	dataHash := hex.EncodeToString(bh[:])
 	iconFilePath := filepath.Join(os.TempDir(), "ollama_temp_icon_"+dataHash)
 
